@@ -72,3 +72,32 @@ This directory contains offline, un-truncated official documentation mirrored fr
 
 ### Guides: AI Coding Agents
 - [AI Coding Agents](guides/ai-coding-agents.md): DFINITY's official guide for prompt-driven canister architecture.
+
+### Developer Tools: ICP CLI (`icp-cli`)
+- [ICP CLI Overview](icp-cli/index.md): Build and deploy applications on the Internet Computer using `icp-cli`.
+- [Quickstart](icp-cli/quickstart.md): Deploy a fullstack app in under 5 minutes with `icp-cli`.
+- [Tutorial](icp-cli/tutorial.md): Step-by-step application development and deployment workflow.
+- [Concepts: Project Model](icp-cli/concepts/project-model.md): Multi-canister project discovery and consolidation.
+- [Concepts: Build, Deploy, Sync](icp-cli/concepts/build-deploy-sync.md): The three lifecycle phases of `icp-cli`.
+- [Concepts: Environments](icp-cli/concepts/environments.md): Local, staging, and mainnet target environments.
+- [Concepts: Recipes](icp-cli/concepts/recipes.md): Reusable, templated build recipes (Rust, Motoko, static).
+- [Concepts: Sync Plugins](icp-cli/concepts/sync-plugins.md): Wasm-based sync phase extension components.
+- [Concepts: Canister Discovery](icp-cli/concepts/canister-discovery.md): Automatic inter-canister resolution.
+- [Concepts: Project Dependencies](icp-cli/concepts/project-dependencies.md): Local and remote canister dependency graphs.
+- [Guides: Installation](icp-cli/guides/installation.md): Binary setup, package managers, and shell completions.
+- [Guides: Local Development](icp-cli/guides/local-development.md): Fast local development loops and watcher workflows.
+- [Guides: Deploying to Mainnet](icp-cli/guides/deploying-to-mainnet.md): Production deployment and verification.
+- [Guides: Managing Environments](icp-cli/guides/managing-environments.md): Environment definitions, networks, and overrides.
+- [Guides: Managing Identities](icp-cli/guides/managing-identities.md): Ed25519/Secp256k1 key management, HSM, and PEM import/export.
+- [Guides: Tokens & Cycles](icp-cli/guides/tokens-and-cycles.md): Converting ICP to cycles, minting, and wallet top-ups.
+- [Guides: Recipes & Templates](icp-cli/guides/using-recipes.md): Using and authoring custom recipes and templates.
+- [Guides: Containerized Networks](icp-cli/guides/containerized-networks.md): Running isolated local ICP networks via Docker/Podman.
+- [Guides: Canister Snapshots](icp-cli/guides/canister-snapshots.md): Snapshotting and restoring canister states.
+- [Migration from dfx](icp-cli/migration/from-dfx.md): Comprehensive migration guide from legacy `dfx` to modern `icp-cli`.
+- [Migration: Upgrading from v0.2](icp-cli/migration/upgrading-from-v0-2.md): v0.2 to current specification breaking changes.
+- [Reference: CLI Manual](icp-cli/reference/cli.md): Complete command-line flag and argument specification.
+- [Reference: Configuration (icp.yaml)](icp-cli/reference/configuration.md): Complete schema documentation for `icp.yaml`.
+- [Reference: Canister Settings](icp-cli/reference/canister-settings.md): Compute allocation, memory limits, and controllers.
+- [Reference: Environment Variables](icp-cli/reference/environment-variables.md): Runtime overrides and configuration environment variables.
+- [JSON Schemas](icp-cli/schemas/): Formal JSON schemas for `icp.yaml`, `canister.yaml`, `environment.yaml`, and `network.yaml`.
+

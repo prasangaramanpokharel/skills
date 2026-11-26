@@ -1,0 +1,417 @@
+{
+  "$defs": {
+    "ArgsFormat": {
+      "description": "Format specifier for canister call/install args content.",
+      "oneOf": [
+        {
+          "const": "hex",
+          "description": "Hex-encoded bytes",
+          "type": "string"
+        },
+        {
+          "const": "candid",
+          "description": "Candid text format",
+          "type": "string"
+        },
+        {
+          "const": "bin",
+          "description": "Raw binary (only valid for file references)",
+          "type": "string"
+        }
+      ]
+    },
+    "ControllerRef": {
+      "description": "A controller: either a principal text (e.g. '2vxsx-fae') or a canister name in this project (e.g. 'my_canister')",
+      "type": "string"
+    },
+    "CyclesAmount": {
+      "anyOf": [
+        {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "An amount of cycles.\n\nDeserializes from a number or a string with suffixes (k, m, b, t) and optional underscore separators."
+    },
+    "DurationAmount": {
+      "anyOf": [
+        {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "A duration in seconds.\n\nDeserializes from a number (seconds) or a string with duration suffix (s, m, h, d, w)\nand optional underscore separators.\n\nSuffixes (case-insensitive):\n- `s` — seconds\n- `m` — minutes (×60)\n- `h` — hours (×3600)\n- `d` — days (×86400)\n- `w` — weeks (×604800)\n\nA bare number without suffix is treated as seconds."
+    },
+    "LogVisibility": {
+      "description": "Controls who can read canister logs.",
+      "oneOf": [
+        {
+          "description": "'controllers' (only the canister's controllers can read the logs) or 'public' (anyone can read the logs)",
+          "enum": [
+            "controllers",
+            "public"
+          ],
+          "type": "string"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Specific principals that can read the logs",
+          "properties": {
+            "allowed_viewers": {
+              "description": "Principal IDs that can read the logs, in addition to the controllers",
+              "items": {
+                "description": "A principal ID",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "allowed_viewers"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "ManifestArgs": {
+      "anyOf": [
+        {
+          "description": "Plain string shorthand — treated as Candid.",
+          "type": "string"
+        },
+        {
+          "description": "File reference with explicit format.",
+          "properties": {
+            "format": {
+              "$ref": "#/$defs/ArgsFormat",
+              "default": "candid"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "type": "object"
+        },
+        {
+          "description": "Inline value with explicit format.",
+          "properties": {
+            "format": {
+              "$ref": "#/$defs/ArgsFormat",
+              "default": "candid"
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "type": "object"
+        }
+      ],
+      "description": "Install args as specified in a manifest file (canister.yaml or icp.yaml) —\nthe value of `init_args` or of `upgrade_args`.\n\nA plain string is shorthand for inline Candid:\n```yaml\ninit_args: \"(42)\"\n```\n\nObject forms with explicit source and format:\n```yaml\ninit_args:\n  path: ./args.bin\n  format: bin\n```\n```yaml\ninit_args:\n  value: \"(42)\"\n  format: candid\n```"
+    },
+    "ManifestEnvVar": {
+      "anyOf": [
+        {
+          "description": "The value, written inline.",
+          "type": "string"
+        },
+        {
+          "description": "A file holding the value. Surrounding whitespace is trimmed off the\nfile's contents, so a trailing newline does not become part of the value.",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "type": "object"
+        }
+      ],
+      "description": "An environment variable value as written in a manifest.\n\nA plain scalar is the value itself:\n```yaml\nenvironment_variables:\n  API_ENDPOINT: https://api.example.com\n```\n\nThe object form reads the value from a file, relative to the canister's own\ndirectory — including when an environment overrides the variable, matching how\nan `init_args` override resolves its path:\n```yaml\nenvironment_variables:\n  API_KEY:\n    path: ./secrets/api-key\n```"
+    },
+    "MemoryAmount": {
+      "anyOf": [
+        {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "An amount of memory in bytes.\n\nDeserializes from a number or a string with suffixes (kb, kib, mb, mib, gb, gib),\noptional decimals, and optional underscore separators."
+    },
+    "Settings": {
+      "description": "Canister settings, such as compute and memory allocation.",
+      "properties": {
+        "compute_allocation": {
+          "description": "Compute allocation (0 to 100). Represents guaranteed compute capacity.",
+          "format": "uint64",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "controllers": {
+          "default": null,
+          "description": "Controllers for this canister. Each entry is either a principal text\n(e.g. \"2vxsx-fae\") or the name of another canister in this project.\nNamed canisters that do not yet exist will be set as controllers once created.",
+          "items": {
+            "$ref": "#/$defs/ControllerRef"
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "environment_variables": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ManifestEnvVar"
+          },
+          "description": "Environment variables for the canister as key-value pairs.\nThese variables are accessible within the canister and can be used to configure\nbehavior without hardcoding values in the WASM module.\nA value may also be read from a file with `{ path: <file> }`.",
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "freezing_threshold": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DurationAmount"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Freezing threshold in seconds. Controls how long a canister can be inactive before being frozen.\nSupports duration suffixes in YAML: s, m, h, d, w (e.g. \"30d\" or \"4w\")."
+        },
+        "log_memory_limit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MemoryAmount"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Log memory limit in bytes (max 2 MiB). Oldest logs are purged when usage exceeds this value.\nSupports suffixes in YAML: kb, kib, mb, mib (e.g. \"2mib\" or \"256kib\"). Canister default is 4096 bytes."
+        },
+        "log_visibility": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LogVisibility"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Controls who can read canister logs."
+        },
+        "memory_allocation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MemoryAmount"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Memory allocation in bytes. If unset, memory is allocated dynamically.\nSupports suffixes in YAML: kb, kib, mb, mib, gb, gib (e.g. \"4gib\" or \"2.5kb\")."
+        },
+        "reserved_cycles_limit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CyclesAmount"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Upper limit on cycles reserved for future resource payments.\nMemory allocations that would push the reserved balance above this limit will fail.\nSupports suffixes in YAML: k, m, b, t (e.g. \"4t\" or \"4.3t\")."
+        },
+        "snapshot_visibility": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SnapshotVisibility"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Controls who can read the canister's snapshots."
+        },
+        "status_visibility": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StatusVisibility"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Controls who can read the canister's status."
+        },
+        "wasm_memory_limit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MemoryAmount"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Wasm memory limit in bytes. Sets an upper bound for Wasm heap growth.\nSupports suffixes in YAML: kb, kib, mb, mib, gb, gib (e.g. \"4gib\" or \"2.5kb\")."
+        },
+        "wasm_memory_threshold": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MemoryAmount"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Wasm memory threshold in bytes. Triggers a callback when exceeded.\nSupports suffixes in YAML: kb, kib, mb, mib, gb, gib (e.g. \"4gib\" or \"2.5kb\")."
+        }
+      },
+      "type": "object"
+    },
+    "SnapshotVisibility": {
+      "description": "Controls who can read the canister's snapshots.",
+      "oneOf": [
+        {
+          "description": "'controllers' (only the canister's controllers can read the snapshots) or 'public' (anyone can read the snapshots)",
+          "enum": [
+            "controllers",
+            "public"
+          ],
+          "type": "string"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Specific principals that can read the snapshots",
+          "properties": {
+            "allowed_viewers": {
+              "description": "Principal IDs that can read the snapshots, in addition to the controllers",
+              "items": {
+                "description": "A principal ID",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "allowed_viewers"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "StatusVisibility": {
+      "description": "Controls who can read the canister's status.",
+      "oneOf": [
+        {
+          "description": "'controllers' (the canister's controllers, plus any subnet administrators and the canister itself, can read the status) or 'public' (anyone can read the status)",
+          "enum": [
+            "controllers",
+            "public"
+          ],
+          "type": "string"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Specific principals that can read the status",
+          "properties": {
+            "allowed_viewers": {
+              "description": "Principal IDs that can read the status, in addition to the controllers",
+              "items": {
+                "description": "A principal ID",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "allowed_viewers"
+          ],
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "$id": "EnvironmentManifest",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Schema for EnvironmentManifest",
+  "properties": {
+    "canisters": {
+      "description": "An optional list of this project's own canisters to be included in this\nenvironment. Defaults to all of them if not specified.",
+      "items": {
+        "type": "string"
+      },
+      "type": [
+        "array",
+        "null"
+      ]
+    },
+    "init_args": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ManifestArgs"
+      },
+      "description": "Override init args for specific canisters in this environment",
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "network": {
+      "description": "The target network for canister deployment.\nDefaults to the `local` network if not specified",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "settings": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Settings"
+      },
+      "description": "Override the canister settings for this environment",
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "upgrade_args": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ManifestArgs"
+      },
+      "description": "Override upgrade args for specific canisters in this environment",
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "title": "EnvironmentManifest",
+  "type": "object"
+}

@@ -18,13 +18,13 @@ Key features:
 - **Environments**: named deployment targets that combine a network, canister set, and settings (e.g., local, staging, production)
 - **Project scaffolding**: `icp new` bootstraps new projects from official templates
 
-For installation, see the [Quickstart](../getting-started/quickstart.md) or the [full CLI documentation](https://cli.internetcomputer.org/1.6/). To complete `icp` commands in your shell, `icp completions <shell>` prints a script for bash, zsh, fish, elvish, or PowerShell; see [shell completions](https://cli.internetcomputer.org/1.6/guides/installation#shell-completions) for where to put it.
+For installation, see the [Quickstart](../getting-started/quickstart.md) or the [full CLI documentation](../icp-cli/index.md). To complete `icp` commands in your shell, `icp completions <shell>` prints a script for bash, zsh, fish, elvish, or PowerShell; see [shell completions](../icp-cli/guides/installation.md#shell-completions) for where to put it.
 
-Advanced: [creating recipes](https://cli.internetcomputer.org/1.6/guides/creating-recipes) and [creating templates](https://cli.internetcomputer.org/1.6/guides/creating-templates) are documented on the CLI docs site.
+Advanced: [creating recipes](../icp-cli/guides/creating-recipes.md) and [creating templates](../icp-cli/guides/creating-templates.md) are documented in the offline CLI guides.
 
-icp-cli collects anonymous usage telemetry. Opt out with `icp settings telemetry false` or `DO_NOT_TRACK=1`.
+icp-cli collects anonymous usage telemetry. Opt out with `icp settings telemetry false` or `DO_NOT_TRACK=1` (see [Telemetry](../icp-cli/telemetry.md)).
 
-Coming from dfx? See the [migration guide](https://cli.internetcomputer.org/1.6/migration/from-dfx).
+Coming from dfx? See the [migration guide](../icp-cli/migration/from-dfx.md). Complete command-line manual is available at [CLI Reference](../icp-cli/reference/cli.md).
 
 ### ic-wasm
 

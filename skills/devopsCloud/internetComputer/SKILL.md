@@ -55,6 +55,10 @@ Before writing Motoko, Rust `ic-cdk`, or Candid code, agents **MUST** consult bu
 - Canister Security Guidelines: [`assets/guides/security/overview.md`](assets/guides/security/overview.md)
 - PocketIC Deterministic Testing: [`assets/guides/testing/pocket-ic.md`](assets/guides/testing/pocket-ic.md)
 - AI Coding Agents: [`assets/guides/ai-coding-agents.md`](assets/guides/ai-coding-agents.md)
+- ICP CLI Reference: [`assets/icp-cli/reference/cli.md`](assets/icp-cli/reference/cli.md)
+- ICP CLI Configuration (`icp.yaml`): [`assets/icp-cli/reference/configuration.md`](assets/icp-cli/reference/configuration.md)
+- Migration from `dfx` to `icp-cli`: [`assets/icp-cli/migration/from-dfx.md`](assets/icp-cli/migration/from-dfx.md)
+- ICP CLI Recipes & Environments: [`assets/icp-cli/concepts/recipes.md`](assets/icp-cli/concepts/recipes.md)
 
 ---
 
